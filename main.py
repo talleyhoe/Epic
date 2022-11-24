@@ -41,13 +41,12 @@ def downloadImages(rootSavePath):
 			print(f'Found existing directory for {os.path.join(rootSavePath, date[0:4], date[5:7], date[8:10])}, skipping this day\n')
 			continue
 
-		imageNameResponseJson = requests.get(f'https://epic.gsfc.nasa.gov/api/natural/date/{date}').json()
+		imageMetaDataResponseJson = requests.get(f'https://epic.gsfc.nasa.gov/api/natural/date/{date}').json()
 
 		#iterating over every photo taken on the supplied day
-		for imageNum, response in enumerate(imageNameResponseJson):
+		for imageNum, response in enumerate(imageMetaDataResponseJson):
 			savePath = os.path.join(rootSavePath, date[0:4], date[5:7], date[8:10])
 			imageName = response['image']
-			fullDate = response['date'].replace(' ', '_').replace('-', '_').replace(':', '_')
 
 			URL = f'https://api.nasa.gov/EPIC/archive/natural/{date[0:4]}/{date[5:7]}/{date[8:10]}/png/{imageName}.png?api_key=BkFVBBcoSre33RhWShgaYdDD1wyFowS3hUx7QmUb'
 			
