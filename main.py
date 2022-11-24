@@ -1,10 +1,7 @@
 import requests
 import subprocess as sp
 from setup import *
-#get the file name using the api
-#use wget to download the image
-#iterate over all the returned images to find one that matches our input date
-	
+
 def downloadImages(rootSavePath):
 	dateResponse = requests.get('https://epic.gsfc.nasa.gov/api/enhanced/all')
 	dateList = []
