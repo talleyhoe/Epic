@@ -15,6 +15,7 @@ def downloadImages(rootSavePath):
 		print(f'Found existing directory for {rootSavePath}\n')
 
 	for date in dateList:
+		print(date)
 		savePath = os.path.join(rootSavePath, date[0:4], date[5:7], date[8:10])
 		#check if folder exists for year
 		if not os.path.isdir(os.path.join(rootSavePath, date[0:4])):
@@ -23,9 +24,9 @@ def downloadImages(rootSavePath):
 		else:
 			print(f'Found existing directory for {os.path.join(rootSavePath, date[0:4])}\n')
 
-		#check is year/month folder exists
+		#check if year/month folder exists
 		if not os.path.isdir(os.path.join(rootSavePath, date[0:4], date[5:7])):
-				print(f'Creating path {os.path.join(rootSavePath, date[0:4], date[5:7])}\n')
+				print(f'Creating directory {os.path.join(rootSavePath, date[0:4], date[5:7])}\n')
 				sp.run(['mkdir', os.path.join(rootSavePath, date[0:4], date[5:7])])
 		else:
 			print(f'Found existing directory for {os.path.join(rootSavePath, date[0:4], date[5:7])}\n')
