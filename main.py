@@ -4,6 +4,7 @@ from setup import *
 
 def downloadImages(rootSavePath):
 	dateResponse = requests.get('https://epic.gsfc.nasa.gov/api/enhanced/all')
+	print(dateResponse.headers)
 	dateList = []
 	for date in dateResponse.json():
 		dateList.append(date['date'])
@@ -47,7 +48,7 @@ def downloadImages(rootSavePath):
 			imageName = response['image']
 
 			URL = f'https://api.nasa.gov/EPIC/archive/natural/{date[0:4]}/{date[5:7]}/{date[8:10]}/png/{imageName}.png?api_key=BkFVBBcoSre33RhWShgaYdDD1wyFowS3hUx7QmUb'
-			
+
 			savePath =  os.path.join(savePath, str(imageNum) + '.png')
 			cmd = f'curl -L -o {savePath} {URL}'
 			print(f'{cmd}\n')
