@@ -5,17 +5,12 @@ from setup import *
 def downloadImages(rootSavePath):
 	#this returns every date each picture was taken on
 	dateResponse = requests.get('https://epic.gsfc.nasa.gov/api/enhanced/all')
-	
-
-
 
 	dateList = []
-
 	for date in dateResponse.json():
+		#since there are multiple pics of earth taken a day, there will be duplicate dates and we need to filter them out or we will make excess requests
 		if date['date'] not in dateList:
 			dateList.append(date['date'])
-	#print(len(dateList))
-	#exit(0)
 
 	if not os.path.isdir(rootSavePath):
 		print(f'Creating path {rootSavePath}\n')
@@ -49,7 +44,9 @@ def downloadImages(rootSavePath):
 			print(f'Found existing directory for {os.path.join(rootSavePath, date[0:4], date[5:7], date[8:10])}, skipping this day\n')
 			continue
 
-		imageMetaDataResponseJson = requests.get(f'https://epic.gsfc.nasa.gov/api/natural/date/{date}').json()
+		imageMetaDataResponse = requests.get(f'https://epic.gsfc.nasa.gov/api/natural/date/{date}')
+		
+		imageMetaDataResponseJson = imageMetaDataResponse.json()
 
 		#iterating over every photo taken on the supplied day
 		for imageNum, response in enumerate(imageMetaDataResponseJson):
@@ -61,6 +58,7 @@ def downloadImages(rootSavePath):
 			savePath =  os.path.join(savePath, str(imageNum) + '.png')
 			cmd = f'curl -L -o {savePath} {URL}'
 			print(f'{cmd}\n')
+			#TODO: Chnage this to use requests to instead of SP, use this link: https://www.alixaprodev.com/2022/07/how-to-download-image-using-requests.html
 			sp.run(['curl', '-L', '-o', savePath, URL])	
 
 
