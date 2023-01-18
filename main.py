@@ -3,11 +3,19 @@ import subprocess as sp
 from setup import *
 
 def downloadImages(rootSavePath):
+	#this returns every date each picture was taken on
 	dateResponse = requests.get('https://epic.gsfc.nasa.gov/api/enhanced/all')
-	print(dateResponse.headers)
+	
+
+
+
 	dateList = []
+
 	for date in dateResponse.json():
-		dateList.append(date['date'])
+		if date['date'] not in dateList:
+			dateList.append(date['date'])
+	#print(len(dateList))
+	#exit(0)
 
 	if not os.path.isdir(rootSavePath):
 		print(f'Creating path {rootSavePath}\n')
@@ -18,7 +26,8 @@ def downloadImages(rootSavePath):
 	for date in dateList:
 		print(date)
 		savePath = os.path.join(rootSavePath, date[0:4], date[5:7], date[8:10])
-		#check if folder exists for year
+		
+		#check if year folder exists
 		if not os.path.isdir(os.path.join(rootSavePath, date[0:4])):
 				print(f'Creating path {os.path.join(rootSavePath, date[0:4])}\n')
 				sp.run(['mkdir', os.path.join(rootSavePath, date[0:4])])
