@@ -2,6 +2,7 @@ import sys
 import os.path
 
 def setup():
+    """Handle and parse save path for downloads from argv"""
     rootSavePath = sys.argv[1]
 
     # Handle argv path creation
