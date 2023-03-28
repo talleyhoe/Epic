@@ -10,7 +10,7 @@ def setup():
         if (mkdir_ans.lower() == 'y' | mkdir_ans.lower() == 'yes'):
             os.makedirs(rootSavePath)
         else:
-            exit(0)
+            sys.exit(1)
     
 
     return rootSavePath
