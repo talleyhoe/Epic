@@ -8,11 +8,13 @@ def setup():
     # Handle argv path creation
     if not os.path.isdir(rootSavePath):
         print(f"'{rootSavePath}' does not exist.") 
-        mkdir_ans = input("Would you like to create the directory? (y/n)")
-        if (mkdir_ans.lower() == 'y' | mkdir_ans.lower() == 'yes'):
+        mkdir_ans = input("Would you like to create the directory? (y/n)\n")
+        if ( (mkdir_ans.lower() == 'y') or (mkdir_ans.lower() == 'yes') ):
+            print(f'Creating path {rootSavePath}\n')
             os.makedirs(rootSavePath)
         else:
             sys.exit(1)
-    
+    else:
+        print(f'Found existing directory for {rootSavePath}\n')
 
     return rootSavePath
