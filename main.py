@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 from setup import *
 
-DEBUG = 1
+DEBUG = 0
 
 def dprint(*args, **kwargs):
     """Print only if global DEBUG is true"""
