@@ -1,3 +1,6 @@
+import asyncio
+
+import aiohttp
 import requests
 from tqdm import tqdm
 
@@ -79,7 +82,7 @@ def setupDirs(rootSavePath, dateList):
         os.makedirs(savePath, exist_ok=True)
         
 
-def genDownloadManifest(rootSavePath):
+async def genDownloadManifest(rootSavePath):
     """
     Call getDateList, setup appropriate folders, get daily image manifest from 
     EPIC, and put together a list of download requests. Will prune out any 
@@ -100,21 +103,26 @@ def genDownloadManifest(rootSavePath):
     manifest = []
 
     print("Generating manifest...")
-    for date in tqdm(dateList):
-        year  = date[0: 4]
-        month = date[5: 7] 
-        day   = date[8:10]
-        imageMetaDataResponse = requests.get(metaDataUrl.format(date)).json()
-        for imageNum, response in enumerate(imageMetaDataResponse):
-            savePath = getSavePath(rootSavePath, year, month, day, imageNum)
-            dprint("Path: {}, Result {}".format(savePath, os.path.exists(savePath)))
-            if not os.path.exists(savePath):
-                webId = response['image']
-                requestStruct = {
-                        "path": savePath,
-                        "url": imageUrl.format(year, month, day, webId)
-                    }
-                manifest.append(requestStruct)
+    async with aiohttp.ClientSession() as session:
+        for date in tqdm(dateList):
+            year  = date[0: 4]
+            month = date[5: 7] 
+            day   = date[8:10]
+            async with session.get(metaDataUrl.format(date)) as metaDataResp:
+                imageMetaDataResponse = await metaDataResp.json()
+                for imageNum, response in enumerate(imageMetaDataResponse):
+                    savePath = getSavePath(rootSavePath, 
+                                           year, month, day, 
+                                           imageNum)
+                    dprint("Path: {}, Result {}"
+                           .format(savePath, os.path.exists(savePath)))
+                    if not os.path.exists(savePath):
+                        webId = response['image']
+                        requestStruct = {
+                                "path": savePath,
+                                "url": imageUrl.format(year, month, day, webId)
+                            }
+                        manifest.append(requestStruct)
     return manifest
 
     
@@ -153,7 +161,7 @@ def downloadImages(rootSavePath, apiKey):
     print("Downloading images...")
 
     # Generates file structure and return files to download
-    manifest = genDownloadManifest(rootSavePath)
+    manifest = asyncio.run(genDownloadManifest(rootSavePath))
     for imageMap in tqdm(manifest):
         remainingRequests = downloadImage(imageMap, apiKey)
         if remainingRequests < 1:
