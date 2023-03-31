@@ -3,7 +3,7 @@ import os.path
 
 def setup():
     """Handle and parse save path for downloads from argv"""
-    rootSavePath = sys.argv[1]
+    rootSavePath = os.path.abspath(sys.argv[1])
 
     # Handle argv path creation
     if not os.path.isdir(rootSavePath):

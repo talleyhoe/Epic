@@ -21,7 +21,7 @@ def addFiletype(filePath: str):
     try:
         imgType = filetype.guess(filePath).mime.split('/')[-1]
     except:
-        imgType = 'jpg'
+        imgType = 'png'
     # This just replaces any filetypes (existing or not) with the new type
     new_path = '.'.join((os.path.splitext(filePath)[0], imgType))
     try:
@@ -107,7 +107,8 @@ def genDownloadManifest(rootSavePath):
         imageMetaDataResponse = requests.get(metaDataUrl.format(date)).json()
         for imageNum, response in enumerate(imageMetaDataResponse):
             savePath = getSavePath(rootSavePath, year, month, day, imageNum)
-            if not os.path.isfile(savePath):
+            dprint("Path: {}, Result {}".format(savePath, os.path.exists(savePath)))
+            if not os.path.exists(savePath):
                 webId = response['image']
                 requestStruct = {
                         "path": savePath,
